@@ -302,8 +302,8 @@ public class RedisDao {
 	 * @param log
 	 * @return:void
 	 */
-	public void pubish(String log) {
-		transaction.publish(LOG, log);
+	public void pubishLog(String log) {
+		transaction.publish(PUB_LOG, log);
 	}
 	
 }

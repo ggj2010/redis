@@ -10,3 +10,8 @@
 
 4、com.msds.test.InitDataToRedis
 这个类主要是实现 将数据库的数据初始化到redis里面。按照规定的key/value格式存储
+
+
+【1】、Monitorql是用来监控的sql变化的，可以用来异步更新到数据 这是一个pub/sub模式
+【2】、删除redi里面的数据 其实是走初始化的逆向过程
+【3】、更新其实是先删除 再插入

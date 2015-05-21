@@ -13,6 +13,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 import com.msds.dubbo.bean.Note;
+import com.msds.dubbo.common.BeanField;
 import com.msds.dubbo.service.BaseService;
 import com.msds.dubbo.service.NoteService;
 import com.msds.redis.dao.RedisDao;
@@ -64,9 +65,9 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 				rd = new RedisDao(transation);
 				rd.delSingleDataFromRedis(note, rd.getBeanField(note));
 				
-				/* 处理之后的日志处理 */
+				/* 处理之后的数据库sql日志处理 */
 				String logs = "delete from tcnote where note_id=" + id;
-				rd.pubish(logs);
+				rd.pubishLog(logs);
 				rd.log(logs);
 				
 				transation.exec();
@@ -80,24 +81,74 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 		}
 	}
 	
-	public void update(Note bean) {
+	/**
+	 * 更新直接调用删除，然后再插入
+	 */
+	public void update(Note note) {
 		RedisCachePool pool = null;
 		Jedis jedis = null;
 		RedisDao rd = null;
-		pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
-		jedis = pool.getResource();
-		
-		Transaction transation = jedis.multi();
-		
-		rd = new RedisDao(transation);
-		if (bean.getAuthorName() != null) {
+		try {
+			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
+			jedis = pool.getResource();
+			if (null != note) {
+				// 查询之后开启事物
+				Transaction transation = jedis.multi();
+				rd = new RedisDao(transation);
+				BeanField bf = rd.getBeanField(note);
+				// 先删除
+				rd.delSingleDataFromRedis(note, bf);
+				// 再插入
+				rd.insertSingleDataToredis(note, bf);
+				
+				/* 处理之后的数据库sql日志处理 */
+				String logs = genSql(note);
+				rd.pubishLog(logs);
+				rd.log(logs);
+				transation.exec();
+			}
+		} catch (Exception e) {
+			log.error(" update(Note note) 失败！" + e.getLocalizedMessage());
 		}
-		
-		StringBuffer sb = new StringBuffer();
-		sb.append(" update tablName set ");
-		
-		if (bean.getAuthorName() != null) {
+		finally {
+			log.info("回收jedis连接");
+			pool.returnResource(jedis);
 		}
+	}
+	
+	/**
+	 * @Description: 组织sql
+	 * @param note
+	 * @return:void
+	 */
+	private String genSql(Note note) {
+		// 组装sql
+		StringBuilder sb = new StringBuilder();
+		sb.append(" update tcnote  set ");
 		
+		if (note.getAuthorName() != null) {
+			sb.append(" author_name='" + note.getAuthorName() + "', ");
+		}
+		if (note.getFromUrl() != null) {
+			sb.append(" from_Url='" + note.getFromUrl() + "', ");
+		}
+		if (note.getNoteName() != null) {
+			sb.append(" note_name='" + note.getNoteName() + "', ");
+		}
+		// flag=0防止note里面字段都是空的
+		sb.append(" flag=0 where note_id= " + note.getNoteId());
+		
+		return sb.toString();
+	}
+	
+	public Note query(String i) {
+		Note note = new Note();
+		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
+		Jedis jedis = pool.getResource();
+		// 查询不用开启事物
+		RedisDao rd = new RedisDao(jedis);
+		note = (Note) rd.getBean("Note:" + i, note.getClass(), jedis);
+		pool.returnResource(jedis);
+		return note;
 	}
 }

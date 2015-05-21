@@ -79,8 +79,8 @@ public class InitDataToRedis {
 		final Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("from " + tableName);
 		List<Object> objectList = query.list();
-		if (objectList.size() > 5) {
-			objectList = objectList.subList(0, 2);
+		if (objectList.size() > 21) {
+			objectList = objectList.subList(0, 20);
 		}
 		return objectList;
 	}

@@ -21,6 +21,7 @@ import redis.clients.jedis.JedisPubSub;
 
 import com.msds.dubbo.bean.Note;
 import com.msds.dubbo.service.BaseService;
+import com.msds.dubbo.service.NoteService;
 import com.msds.redis.test.NotifyDataBase;
 import com.msds.redis.util.RedisCacheManager;
 import com.msds.redis.util.RedisCachePool;
@@ -42,41 +43,54 @@ public class JuitTest {
 	RedisCacheManager redisCacheManager;
 	@Qualifier("NoteServiceImp")
 	@Autowired
-	BaseService NoteService;
+	BaseService baseService;
+	@Autowired
+	NoteService noteService;
 	
-	// 启动日志监听
-	// @Test
+	// 启动日志监听，用MonitorSql 类代替 因为单元测试里面多线程无法堵塞
+	// @Before
 	public void before() {
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 		final Jedis jedis = pool.getResource();
-		
+		final JedisPubSub ndb = new NotifyDataBase();
 		new Thread() {
 			public void run() {// 会广播形式打印log日志
-				JedisPubSub ndb = new NotifyDataBase();
 				jedis.subscribe(ndb, "publog");
 			}
 		}.start();
-		
-		// display(jedis);
-		
-		pool.returnResource(jedis);
-		
 	}
 	
 	// @Test
 	public void find() {
-		List<Note> list = NoteService.findAll();
+		List<Note> list = baseService.findAll();
 		for (Note note : list) {
 			log.info(note.toString());
 		}
 	}
 	
-	@Test
+	/**
+	 * @Description: 测试删除
+	 */
+	// @Test
 	public void delete() {
-		NoteService.delete("2");
+		for (int i = 0; i < 20; i++) {
+			baseService.delete(i + "");
+		}
 	}
 	
+	/**
+	 * @Description: 测试更新
+	 */
 	@Test
+	public void test() {
+		String id = "2";
+		Note note = noteService.query(id);
+		note.setAuthorName("张静月");
+		note.setFromUrl("www.ggjlovezjy.com:1314");
+		baseService.update(note);
+	}
+	
+	// @Test
 	public void after() {
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 		Jedis jedis = pool.getResource();

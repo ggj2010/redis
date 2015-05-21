@@ -8,38 +8,36 @@ public class NotifyDataBase extends JedisPubSub {
 	
 	@Override
 	public void onMessage(String channel, String sql) {
-		log.info("日志sql:" + sql);
+		log.info("redis更新转换成数据库==》sql:" + sql);
 		
 	}
 	
 	@Override
 	public void onPMessage(String pattern, String channel, String message) {
-		// TODO Auto-generated method stub
-		
+		log.info("onPMessage");
 	}
 	
 	@Override
 	public void onSubscribe(String channel, int subscribedChannels) {
-		// TODO Auto-generated method stub
+		log.info("开始监控redis变化！");
 		
 	}
 	
 	@Override
 	public void onUnsubscribe(String channel, int subscribedChannels) {
-		// TODO Auto-generated method stub
+		log.info("onUnsubscribe");
 		
 	}
 	
 	@Override
 	public void onPUnsubscribe(String pattern, int subscribedChannels) {
-		// TODO Auto-generated method stub
+		log.info("onPUnsubscribe");
 		
 	}
 	
 	@Override
 	public void onPSubscribe(String pattern, int subscribedChannels) {
-		// TODO Auto-generated method stub
-		
+		log.info("onPSubscribe");
 	}
 	
 }

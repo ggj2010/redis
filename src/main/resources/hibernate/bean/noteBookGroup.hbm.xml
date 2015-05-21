@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.msds.dubbo.bean">
+	<class name="NoteBookGroup" table="tcnotebookgroup">
+		<id name="noteBookGroupId" column="notebook_group_id">
+				<generator class="identity"/>
+		</id>
+		<property name="noteBookGroupName"  column="notebook_group_name" type="java.lang.String"></property>
+		<property name="textSum"  column="text_sum" type="java.lang.Integer"></property>
+		<property name="createdate" column="create_date" type="java.util.Date" ></property>
+		<property name="flag" not-null="true" column="flag" type="java.lang.Integer"></property>
+	</class>
+</hibernate-mapping>

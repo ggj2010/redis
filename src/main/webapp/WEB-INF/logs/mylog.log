@@ -1,0 +1,2 @@
+2015-05-19 16:52:18,104 -0    [main] com.msds.redis.util.RedisPool  ERROR - 获取Jedis失败！Could not get a resource from the pool [com.msds.redis.util.RedisPool.getJedis(RedisPool.java:59)] 
+2015-05-19 16:57:19,586 -0    [main] com.msds.redis.util.RedisPool  ERROR - 获取Jedis失败！Could not get a resource from the pool [com.msds.redis.util.RedisPool.getJedis(RedisPool.java:59)] 

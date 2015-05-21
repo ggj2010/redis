@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.msds.dubbo.bean">
+	<class name="NoteBook" table="tcnotebook">
+		<id name="noteBookId" column="noteBook_id">
+				<generator class="identity"/>
+		</id>
+		<property name="noteBookName"  column="notebook_name" type="java.lang.String"></property>
+		<property name="textSum" not-null="true" column="text_sum" type="java.lang.Integer"></property>
+		<property name="createdate" column="create_date" type="java.util.Date" ></property>
+		<property name="flag" not-null="true" column="flag" type="java.lang.Integer"></property>
+		<many-to-one name="noteBookGroup" column="notebook_group" lazy="false" not-null="true"></many-to-one>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="GBK"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.msds.dubbo.bean">
+	<class name="Note" table="tcnote">
+		<id name="noteId" column="note_id">
+			<generator class="identity"/>
+		</id>
+		<property name="noteName"  column="note_name" type="java.lang.String"></property>
+		<property name="authorName"  column="author_name" type="java.lang.String"></property>
+		<property name="fromUrl" column="from_url" type="java.lang.String"></property>
+		<property name="blobContent" column="blob_content"  type="blob"></property>
+		<property name="createdate" column="create_date" type="java.util.Date"></property>
+		<property name="flag" not-null="true" column="flag" type="java.lang.Integer"></property>
+		<many-to-one name="noteBook" column="noteBook" lazy="false" not-null="true"></many-to-one>
+		<many-to-one name="noteBookGroup" column="noteBookGroup" lazy="false" not-null="true"></many-to-one>
+	</class>
+</hibernate-mapping>

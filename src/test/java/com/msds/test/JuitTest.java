@@ -61,10 +61,30 @@ public class JuitTest {
 	}
 	
 	// @Test
-	public void find() {
+	public void findAll() {
 		List<Note> list = baseService.findAll();
 		for (Note note : list) {
 			log.info(note.toString());
+		}
+	}
+	
+	// @Test
+	public void findOne() {
+		String id = "1";
+		Note note = noteService.queryById(id);
+		log.info(note.toString());
+	}
+	
+	//
+	@Test
+	public void findByParam() {
+		Note note = new Note();
+		note.setAuthorName("张静月");
+		note.setFromUrl("http://www.tuicool.com/");
+		List<Note> noteList = noteService.queryParamAnd(note);
+		
+		for (Note list : noteList) {
+			log.info(list.toString());
 		}
 	}
 	
@@ -84,7 +104,7 @@ public class JuitTest {
 	@Test
 	public void test() {
 		String id = "2";
-		Note note = noteService.query(id);
+		Note note = noteService.queryById(id);
 		note.setAuthorName("张静月");
 		note.setFromUrl("www.ggjlovezjy.com:1314");
 		baseService.update(note);

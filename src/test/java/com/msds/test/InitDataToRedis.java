@@ -29,6 +29,7 @@ import redis.clients.jedis.Transaction;
 import com.msds.redis.annation.RedisCache;
 import com.msds.redis.dao.RedisDao;
 import com.msds.redis.util.RedisCacheManager;
+import com.msds.redis.util.RedisCachePool;
 import com.msds.redis.util.RedisDataBaseType;
 
 @Slf4j
@@ -51,8 +52,11 @@ public class InitDataToRedis {
 	@Test
 	@Transactional
 	public void init() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
+		Jedis jedis = null;
+		RedisCachePool pool = null;
 		try {
-			Jedis jedis = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString()).getResource();
+			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
+			jedis = pool.getResource();
 			Transaction tx = jedis.multi();
 			tx.flushDB();// 清空所有数据
 			ResourcePatternResolver rp = new PathMatchingResourcePatternResolver();
@@ -68,6 +72,7 @@ public class InitDataToRedis {
 			}
 			tx.exec();// 提交事物
 		} catch (Exception e) {
+			pool.returnResource(jedis);
 			log.error("" + e.getLocalizedMessage());
 		}
 	}

@@ -23,6 +23,7 @@ public class RedisDao {
 	private final static String SPLIT_MARK = ":";
 	private final static String SORT = "sort";
 	private final static String INDEX = "index";
+	// list格式存放log的sql
 	private final static String LOG = "log";
 	// pub/sub模式打印log
 	public final static String PUB_LOG = "publog";
@@ -34,7 +35,7 @@ public class RedisDao {
 	}
 	
 	/**
-	 * 用不到事物
+	 * 用不到事物，所有查询都用这个
 	 */
 	public RedisDao(Jedis jedis) {
 		this.jedis = jedis;
@@ -81,6 +82,24 @@ public class RedisDao {
 	 */
 	public static Set<String> smembers(String key) {
 		return jedis.smembers(key);
+	}
+	
+	/**
+	 * @Description:根据多个key值返回交集的id
+	 * @param key
+	 * @return:Set<String>
+	 */
+	public static Set<String> sinter(String... key) {
+		return jedis.sinter(key);
+	}
+	
+	/**
+	 * @Description:根据多个key值 返回并集的id
+	 * @param key
+	 * @return:Set<String>
+	 */
+	public static Set<String> sunion(String... key) {
+		return jedis.sunion(key);
 	}
 	
 	/**

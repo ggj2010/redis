@@ -38,6 +38,9 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 			RedisDao rd = new RedisDao(jedis);
 			Set<String> sortKey = rd.smembers("Note:index:noteId");
 			noteList = (List<Note>) rd.getListBean(sortKey, Note.class, jedis);
+			
+			// dubbo 调用的时候防止java.sql.Blob cannot be assigned from null ，也就是blob字段不能为空
+			delalBlob(noteList);
 		} catch (Exception e) {
 			log.error(" List<Note> findAll()查询失败！" + e.getLocalizedMessage());
 		}
@@ -55,7 +58,6 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 		try {
 			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 			jedis = pool.getResource();
-			
 			Object note = RedisDao.getBean("Note:" + id, Note.class, jedis);
 			
 			if (null != note) {
@@ -141,7 +143,7 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 		return sb.toString();
 	}
 	
-	public Note query(String i) {
+	public Note queryById(String i) {
 		Note note = new Note();
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 		Jedis jedis = pool.getResource();
@@ -149,6 +151,72 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 		RedisDao rd = new RedisDao(jedis);
 		note = (Note) rd.getBean("Note:" + i, note.getClass(), jedis);
 		pool.returnResource(jedis);
+		
+		// dubbo 调用的时候防止java.sql.Blob cannot be assigned from null ，也就是blob字段不能为空
+		note.setBlobContent(null);
 		return note;
 	}
+	
+	/**
+	 * select * from tcnote where author_name=? and from_url=?
+	 */
+	public List<Note> queryParamAnd(Note note) {
+		List<Note> noteList = new ArrayList<Note>();
+		RedisCachePool pool = null;
+		Jedis jedis = null;
+		try {
+			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
+			jedis = pool.getResource();
+			// 查询不用开启事物
+			RedisDao rd = new RedisDao(jedis);
+			
+			String[] kes = genKeys(note);// 获取需要查询的key的值
+			Set<String> sortKey = rd.sinter(kes);// 获取交集的主键
+			noteList = (List<Note>) rd.getListBean(sortKey, Note.class, jedis);
+			
+			// dubbo 调用的时候防止java.sql.Blob cannot be assigned from null ，也就是blob字段不能为空
+			delalBlob(noteList);
+		} catch (Exception e) {
+			log.error(" List<Note> findAll()查询失败！" + e.getLocalizedMessage());
+		}
+		finally {
+			log.info("回收jedis连接");
+			pool.returnResource(jedis);
+		}
+		return noteList;
+	}
+	
+	/**
+	 * @Description: 组装key值
+	 * @param note
+	 * @return:void
+	 */
+	private String[] genKeys(Note note) {
+		String[] string = null;
+		StringBuilder sb = new StringBuilder();
+		
+		if (note.getAuthorName() != null) {
+			sb.append("," + "Note:authorName:" + note.getAuthorName());
+		}
+		if (note.getFromUrl() != null) {
+			sb.append("," + "Note:fromUrl:" + note.getFromUrl() + ",");
+		}
+		if (note.getFlag() != null) {
+			sb.append("," + "Note:flag:" + note.getFlag() + ",");
+		}
+		
+		if (null != sb.toString()) {
+			// 去除第一个逗号
+			String replaceString = sb.toString().replaceFirst(",", "");
+			string = replaceString.split(",");
+		}
+		return string;
+	}
+	
+	private void delalBlob(List<Note> noteList) {
+		for (Note note : noteList) {
+			note.setBlobContent(null);
+		}
+	}
+	
 }

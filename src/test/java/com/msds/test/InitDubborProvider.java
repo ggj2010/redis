@@ -15,7 +15,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 @Slf4j
 public class InitDubborProvider {
-	// @Before
 	@Test
 	// 发布服务
 	public void provider() throws IOException {
@@ -26,13 +25,4 @@ public class InitDubborProvider {
 		// ApplicationContext ac = new ClassPathXmlApplicationContext("dubbo/dubbo-provider.xml");
 	}
 	
-	// @Test//调用服务
-	// public void test() {
-	// ApplicationContext context = new ClassPathXmlApplicationContext("dubbo/dubbo-consumer.xml");
-	// // context.start();
-	// DemoService demoService = (DemoService) context.getBean("demoService"); // 获取远程服务代理
-	// String hello = demoService.sayHello("world"); // 执行远程方法
-	// log.info(hello + "============================================");
-	//
-	// }
 }

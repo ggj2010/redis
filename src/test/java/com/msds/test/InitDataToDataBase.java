@@ -32,6 +32,12 @@ import com.msds.dubbo.bean.Note;
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+/**
+ * @ClassName:InitDataToDataBase.java
+ * @Description: 初始化网站数据到数据库
+ * @author gaoguangjin
+ * @Date 2015-5-21 上午9:55:48
+ */
 public class InitDataToDataBase extends AbstractTransactionalJUnit4SpringContextTests {
 	@Autowired
 	private SessionFactory sessionFactory;

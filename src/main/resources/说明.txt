@@ -1,0 +1,12 @@
+###本代码主要实现内容#####
+1、将数据库数据 按照规定的key/value 协议存储到
+
+
+1、数据库用的是mysql,在druidpool.properties 可以自行添加别的数据源，记得要同步hibernate的方言。
+2、redis.psc 是mysql的数据备份文件，直接在mysql里面建立redis数据库，然后还原备份就有数据了。
+
+3、com.msds.test.InitDataToDataBase
+ 这个类主要实现初始化网站数据到数据库的作用，写了一个多线程爬去 http://www.tuicool.com/ 推酷网站上面的文章
+
+4、com.msds.test.InitDataToRedis
+这个类主要是实现 将数据库的数据初始化到redis里面。按照规定的key/value格式存储

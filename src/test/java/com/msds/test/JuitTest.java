@@ -31,6 +31,12 @@ import com.msds.redis.util.RedisDataBaseType;
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+/**
+ * @ClassName:JuitTest.java
+ * @Description:   redis测试 
+ * @author gaoguangjin
+ * @Date 2015-5-21 上午10:03:00
+ */
 public class JuitTest {
 	@Autowired
 	RedisCacheManager redisCacheManager;

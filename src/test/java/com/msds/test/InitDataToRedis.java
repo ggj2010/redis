@@ -36,6 +36,12 @@ import com.msds.redis.util.RedisDataBaseType;
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+/**
+ * @ClassName:InitDataToRedis.java
+ * @Description: 初始化数据库数据到redis   
+ * @author gaoguangjin
+ * @Date 2015-5-21 上午10:02:00
+ */
 public class InitDataToRedis {
 	@Autowired
 	SessionFactory sessionFactory;

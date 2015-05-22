@@ -105,7 +105,7 @@ public class JuitTest {
 	 */
 	@Test
 	public void update() {
-		String id = "7";
+		String id = "9";
 		Note note = noteService.queryById(id);
 		note.setAuthorName("张静月");
 		note.setFromUrl("www.ggjlovezjy.com:1314");

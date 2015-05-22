@@ -329,4 +329,13 @@ public class RedisDao {
 		transaction.publish(PUB_LOG, log);
 	}
 	
+	/**
+	 * @Description:获取redis里面list类型的log。
+	 * @see:lpop命令 返回并删除名称为key的list中的首元素。如果插入数据库失败需要再把log插入进来，调用log(sql)方法
+	 * @return:String
+	 */
+	public static String lpopLog(Jedis jedis) {
+		return jedis.lpop(LOG);
+	}
+	
 }

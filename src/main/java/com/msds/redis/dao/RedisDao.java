@@ -187,12 +187,16 @@ public class RedisDao {
 	 * @return:Long
 	 */
 	public void log(String sql) {
-		// set里面放类名+json list里面放类名
 		transaction.lpush(LOG, sql);
 	}
 	
-	public void watch(String... key) {
-		
+	/**
+	 * @Description: 监听必须在开启事物之前，执行watch命令
+	 * @param keys
+	 * @return:void
+	 */
+	public void watch(String... keys) {
+		jedis.watch(keys);
 	}
 	
 	/**

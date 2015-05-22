@@ -60,6 +60,7 @@ public class JuitTest {
 		}.start();
 	}
 	
+	// 查询所有数据
 	// @Test
 	public void findAll() {
 		List<Note> list = baseService.findAll();
@@ -68,6 +69,7 @@ public class JuitTest {
 		}
 	}
 	
+	// 查询单条数据
 	// @Test
 	public void findOne() {
 		String id = "1";
@@ -75,8 +77,8 @@ public class JuitTest {
 		log.info(note.toString());
 	}
 	
-	//
-	@Test
+	// 查询带参数的
+	// @Test
 	public void findByParam() {
 		Note note = new Note();
 		note.setAuthorName("张静月");
@@ -99,10 +101,10 @@ public class JuitTest {
 	}
 	
 	/**
-	 * @Description: 测试更新
+	 * @Description: 测试更新。更新需要注意的细节就是，先从redis里面查询出来的值，然后在上面做修改。
 	 */
 	@Test
-	public void test() {
+	public void update() {
 		String id = "2";
 		Note note = noteService.queryById(id);
 		note.setAuthorName("张静月");

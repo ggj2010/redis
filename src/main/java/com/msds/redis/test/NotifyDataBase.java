@@ -9,7 +9,6 @@ public class NotifyDataBase extends JedisPubSub {
 	@Override
 	public void onMessage(String channel, String sql) {
 		log.info("redis更新转换成数据库==》sql:" + sql);
-		
 	}
 	
 	@Override

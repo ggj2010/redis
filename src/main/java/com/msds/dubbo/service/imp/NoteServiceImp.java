@@ -86,25 +86,29 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 	/**
 	 * 更新直接调用删除，然后再插入
 	 */
-	public void update(Note note) {
+	public void update(Note newNote) {
 		RedisCachePool pool = null;
 		Jedis jedis = null;
 		RedisDao rd = null;
 		try {
 			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 			jedis = pool.getResource();
-			if (null != note) {
+			
+			// 获取原来redis里面存储的note
+			Object orldNote = RedisDao.getBean("Note:" + newNote.getNoteId(), Note.class, jedis);
+			if (null != orldNote) {
 				// 查询之后开启事物
 				Transaction transation = jedis.multi();
 				rd = new RedisDao(transation);
-				BeanField bf = rd.getBeanField(note);
-				// 先删除
-				rd.delSingleDataFromRedis(note, bf);
-				// 再插入
-				rd.insertSingleDataToredis(note, bf);
+				BeanField beanField = rd.getBeanField(orldNote);
+				
+				// 先删除原来的
+				rd.delSingleDataFromRedis(orldNote, beanField);
+				// 再插入新修改的note
+				rd.insertSingleDataToredis(newNote, beanField);
 				
 				/* 处理之后的数据库sql日志处理 */
-				String logs = genSql(note);
+				String logs = genSql(newNote);
 				rd.pubishLog(logs);
 				rd.log(logs);
 				transation.exec();

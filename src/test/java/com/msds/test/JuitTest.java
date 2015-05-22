@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPubSub;
 import com.msds.dubbo.bean.Note;
 import com.msds.dubbo.service.BaseService;
 import com.msds.dubbo.service.NoteService;
-import com.msds.redis.test.NotifyDataBase;
+import com.msds.redis.util.NotifyDataBase;
 import com.msds.redis.util.RedisCacheManager;
 import com.msds.redis.util.RedisCachePool;
 import com.msds.redis.util.RedisDataBaseType;
@@ -105,7 +105,7 @@ public class JuitTest {
 	 */
 	@Test
 	public void update() {
-		String id = "2";
+		String id = "7";
 		Note note = noteService.queryById(id);
 		note.setAuthorName("张静月");
 		note.setFromUrl("www.ggjlovezjy.com:1314");

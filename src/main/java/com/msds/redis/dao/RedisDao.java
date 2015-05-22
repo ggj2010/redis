@@ -24,7 +24,7 @@ public class RedisDao {
 	private final static String SORT = "sort";
 	private final static String INDEX = "index";
 	// list格式存放log的sql
-	private final static String LOG = "log";
+	public final static String LOG = "log";
 	// pub/sub模式打印log
 	public final static String PUB_LOG = "publog";
 	private static Jedis jedis;

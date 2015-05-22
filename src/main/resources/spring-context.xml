@@ -76,7 +76,7 @@
 
 	<!-- 配置事务边界 -->
 	<aop:config>
-		<aop:pointcut id="serviceMethod" expression="execution(* com.msds.dubbo.service.*.*(..))" />
+		<aop:pointcut id="serviceMethod" expression="execution(* com.msds.redis.dao.*.*(..))" />
 		<aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice" />
 	</aop:config>
 
@@ -87,7 +87,7 @@
 			<tx:method name="save*" propagation="REQUIRED" />
 			<tx:method name="del*" propagation="REQUIRED" />
 			<tx:method name="update*" propagation="REQUIRED" />
-			<tx:method name="do*" propagation="REQUIRED" />
+			<tx:method name="excute*" propagation="REQUIRED" />
 			<tx:method name="*" propagation="REQUIRED" read-only="true" />
 		</tx:attributes>
 	</tx:advice>

@@ -11,7 +11,7 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
-@Service
+@Service("redisCacheManager")
 @Slf4j
 public class RedisCacheManager {
 	@Value("${redisdbtype}")

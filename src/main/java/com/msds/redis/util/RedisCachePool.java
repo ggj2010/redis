@@ -3,6 +3,12 @@ package com.msds.redis.util;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+/**
+ * @ClassName:RedisCachePool.java
+ * @Description:
+ * @author gaoguangjin
+ * @Date 2015-5-25 下午2:30:33
+ */
 public class RedisCachePool {
 	
 	private JedisPool jedisPool = null;

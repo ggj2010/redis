@@ -13,10 +13,10 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 import com.msds.dubbo.bean.Note;
-import com.msds.dubbo.common.BeanField;
 import com.msds.dubbo.service.BaseService;
 import com.msds.dubbo.service.NoteService;
 import com.msds.redis.dao.RedisDao;
+import com.msds.redis.util.BeanField;
 import com.msds.redis.util.RedisCacheManager;
 import com.msds.redis.util.RedisCachePool;
 import com.msds.redis.util.RedisDataBaseType;

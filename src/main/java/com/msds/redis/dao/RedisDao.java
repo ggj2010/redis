@@ -9,9 +9,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
 import com.alibaba.fastjson.JSON;
-import com.msds.dubbo.common.BeanField;
 import com.msds.redis.annation.RedisFieldNotCache;
 import com.msds.redis.annation.RedisQuery;
+import com.msds.redis.util.BeanField;
 
 /**
  * @ClassName:RedisDao.java
@@ -336,6 +336,14 @@ public class RedisDao {
 	 */
 	public static String lpopLog(Jedis jedis) {
 		return jedis.lpop(LOG);
+	}
+	
+	/**
+	 * @Description:清空redis库所有缓存数据
+	 * @return:void
+	 */
+	public void flushDB() {
+		transaction.flushDB();
 	}
 	
 }

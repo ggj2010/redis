@@ -2,8 +2,6 @@ package com.msds.redis.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Service("redisCacheManager")
-@Slf4j
+// @Slf4j
 public class RedisCacheManager {
 	@Value("${redisdbtype}")
 	private String redisdbtype;
@@ -82,7 +80,7 @@ public class RedisCacheManager {
 				}
 			}
 		} catch (Exception e) {
-			log.error("redisCacheManager初始化失败！" + e.getLocalizedMessage());
+			// log.error("redisCacheManager初始化失败！" + e.getLocalizedMessage());
 		}
 	}
 	

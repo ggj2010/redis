@@ -1,7 +1,13 @@
-package com.msds.dubbo.common;
+package com.msds.redis.util;
 
 import java.lang.reflect.Field;
 
+/**
+ * @ClassName:BeanField.java
+ * @Description: bean工具类
+ * @author gaoguangjin
+ * @Date 2015-5-25 下午2:30:58
+ */
 public class BeanField {
 	String primaryKey;
 	String className;

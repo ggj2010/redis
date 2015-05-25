@@ -52,9 +52,7 @@ public class NotifyDataBase extends JedisPubSub {
 					jedis.lpush(RedisDao.LOG, oldSql);// 更新失败重新添加到list里面
 				}
 			}
-			
 		}
-		
 	}
 	
 	@Override

@@ -61,7 +61,7 @@ public class JuitTest {
 	}
 	
 	// 查询所有数据
-	// @Test
+	@Test
 	public void findAll() {
 		List<Note> list = baseService.findAll();
 		for (Note note : list) {
@@ -86,7 +86,7 @@ public class JuitTest {
 		List<Note> noteList = noteService.queryParamAnd(note);
 		
 		for (Note list : noteList) {
-			log.info(list.toString());
+			// log.info(list.toString());
 		}
 	}
 	
@@ -103,13 +103,15 @@ public class JuitTest {
 	/**
 	 * @Description: 测试更新。更新需要注意的细节就是，先从redis里面查询出来的值，然后在上面做修改。
 	 */
-	@Test
+	// @Test
 	public void update() {
-		String id = "9";
+		String id = "50";
 		Note note = noteService.queryById(id);
-		note.setAuthorName("张静月");
-		note.setFromUrl("www.ggjlovezjy.com:1314");
-		baseService.update(note);
+		if (null != note) {
+			note.setAuthorName("张静月");
+			note.setFromUrl("www.ggjlovezjy.com:1314");
+			baseService.update(note);
+		}
 	}
 	
 	// @Test

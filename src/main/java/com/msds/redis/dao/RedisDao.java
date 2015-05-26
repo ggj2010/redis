@@ -46,8 +46,32 @@ public class RedisDao {
 	 * @param key
 	 * @return:Boolean
 	 */
-	public static Boolean existValueByKey(String key, String value) {
+	public Boolean existValueByKey(String key, String value) {
 		return jedis.get(key) == value ? true : false;
+	}
+	
+	/**
+	 * @Description:根据key返回值
+	 * @param key
+	 * @param jedis
+	 * @return:String
+	 */
+	public static String get(String key, Jedis jedis) {
+		return jedis.get(key);
+	}
+	
+	/**
+	 * @Description:返回多个key对应的valueList。
+	 * @param sortKey
+	 * @param jedis
+	 * @return:List<String>
+	 */
+	public static List<String> getListString(Set<String> sortKey, Jedis jedis) {
+		List<String> list = new ArrayList<String>();
+		for (String key : sortKey) {
+			list.add(jedis.get(key));
+		}
+		return list;
 	}
 	
 	/**
@@ -71,7 +95,7 @@ public class RedisDao {
 	 * @param pattern
 	 * @return:Set<String>
 	 */
-	public static Set<String> keys(String pattern) {
+	public Set<String> keys(String pattern) {
 		return jedis.keys(pattern);
 	}
 	
@@ -80,7 +104,7 @@ public class RedisDao {
 	 * @param key
 	 * @return:Set<String>
 	 */
-	public static Set<String> smembers(String key) {
+	public Set<String> smembers(String key) {
 		return jedis.smembers(key);
 	}
 	
@@ -89,7 +113,7 @@ public class RedisDao {
 	 * @param key
 	 * @return:Set<String>
 	 */
-	public static Set<String> sinter(String... key) {
+	public Set<String> sinter(String... key) {
 		return jedis.sinter(key);
 	}
 	
@@ -98,7 +122,7 @@ public class RedisDao {
 	 * @param key
 	 * @return:Set<String>
 	 */
-	public static Set<String> sunion(String... key) {
+	public Set<String> sunion(String... key) {
 		return jedis.sunion(key);
 	}
 	

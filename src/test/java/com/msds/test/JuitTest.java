@@ -60,13 +60,17 @@ public class JuitTest {
 		}.start();
 	}
 	
-	// 查询所有数据
+	// 查询所有数据。redis和服务器子同一局域网下
 	@Test
 	public void findAll() {
+		long time = System.currentTimeMillis();
 		List<Note> list = baseService.findAll();
+		
 		for (Note note : list) {
 			log.info(note.toString());
 		}
+		long time2 = System.currentTimeMillis();
+		log.info("耗时" + (time2 - time));// 9790
 	}
 	
 	// 查询单条数据
@@ -86,7 +90,7 @@ public class JuitTest {
 		List<Note> noteList = noteService.queryParamAnd(note);
 		
 		for (Note list : noteList) {
-			// log.info(list.toString());
+			log.info(list.toString());
 		}
 	}
 	
@@ -107,11 +111,9 @@ public class JuitTest {
 	public void update() {
 		String id = "50";
 		Note note = noteService.queryById(id);
-		if (null != note) {
-			note.setAuthorName("张静月");
-			note.setFromUrl("www.ggjlovezjy.com:1314");
-			baseService.update(note);
-		}
+		note.setAuthorName("张静月");
+		note.setFromUrl("www.ggjlovezjy.com:1314");
+		baseService.update(note);
 	}
 	
 	// @Test

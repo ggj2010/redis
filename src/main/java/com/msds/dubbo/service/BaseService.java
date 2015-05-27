@@ -11,4 +11,7 @@ public interface BaseService<T> {
 	
 	/* 更新 */
 	void update(T t);
+	
+	/**/
+	void insert(T t);
 }

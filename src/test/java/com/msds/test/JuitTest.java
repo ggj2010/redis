@@ -61,7 +61,7 @@ public class JuitTest {
 	}
 	
 	// 查询所有数据。redis和服务器子同一局域网下
-	@Test
+	// @Test
 	public void findAll() {
 		long time = System.currentTimeMillis();
 		List<Note> list = baseService.findAll();
@@ -81,6 +81,16 @@ public class JuitTest {
 		log.info(note.toString());
 	}
 	
+	@Test
+	public void insert() {
+		Note note = new Note();
+		note.setFlag(0);
+		note.setFromUrl("www.ggjlovezjy.com:1314");
+		note.setNoteName("测试插入");
+		note.setAuthorName("高广金测试插入");
+		baseService.insert(note);
+	}
+	
 	// 查询带参数的
 	// @Test
 	public void findByParam() {
@@ -97,9 +107,9 @@ public class JuitTest {
 	/**
 	 * @Description: 测试删除
 	 */
-	// @Test
+	@Test
 	public void delete() {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 2; i++) {
 			baseService.delete(i + "");
 		}
 	}
@@ -142,6 +152,5 @@ public class JuitTest {
 		for (String string4 : dd) {
 			log.info("验证d" + string4);
 		}
-		
 	}
 }

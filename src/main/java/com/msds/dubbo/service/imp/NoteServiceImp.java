@@ -223,4 +223,55 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 		}
 	}
 	
+	public void insert(Note note) {
+		RedisCachePool pool = null;
+		Jedis jedis = null;
+		RedisDao rd = null;
+		try {
+			pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
+			jedis = pool.getResource();
+			
+			// 获取redis里面最大的主键值
+			Set<String> sortKey = RedisDao.getRevrangeSortSet("Note:sort:noteId", 0, 0, jedis);
+			for (String id : sortKey) {
+				// 新增的主键赋值
+				note.setNoteId(Integer.parseInt(id) + 1);
+				break;
+			}
+			
+			Transaction transation = jedis.multi();
+			rd = new RedisDao(transation);
+			BeanField beanField = rd.getBeanField(note);
+			// 插入新增的
+			rd.insertSingleDataToredis(note, beanField);
+			
+			/* 处理之后的数据库sql日志处理 */
+			String logs = insertSql(note);
+			rd.pubishLog(logs);
+			rd.log(logs);
+			transation.exec();
+			
+		} catch (Exception e) {
+			log.error(" insert(Note note) 失败！" + e.getLocalizedMessage());
+		}
+		finally {
+			log.info("回收insert==>jedis连接");
+			pool.returnResource(jedis);
+		}
+	}
+	
+	private String insertSql(Note note) {
+		// 组装sql
+		StringBuilder sb = new StringBuilder();
+		sb.append("insert into tcnote (noteid,note_name,author_name,from_url,flag,noteBook,noteBookGroup) values ( ");
+		sb.append(note.getNoteId() + ", ");
+		sb.append(note.getNoteName() + ", ");
+		sb.append(note.getAuthorName() + ", ");
+		sb.append(note.getFromUrl() + ", ");
+		sb.append(note.getFlag() + ", ");
+		sb.append(" 1, ");
+		sb.append(" 1 )");
+		return sb.toString();
+	}
+	
 }

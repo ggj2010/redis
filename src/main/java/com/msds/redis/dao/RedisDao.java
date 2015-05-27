@@ -20,22 +20,30 @@ import com.msds.redis.util.BeanField;
  * @Date 2015-5-19 下午11:27:29
  */
 public class RedisDao {
+	// 分隔符
 	private final static String SPLIT_MARK = ":";
+	// 排序key里面的标记位
 	private final static String SORT = "sort";
+	// 主键key里面的标记位
 	private final static String INDEX = "index";
 	// list格式存放log的sql
 	public final static String LOG = "log";
 	// pub/sub模式打印log
 	public final static String PUB_LOG = "publog";
+	
 	private static Jedis jedis;
+	// 事物
 	private static Transaction transaction;
 	
+	/**
+	 * redis事物一旦开启之后，所有的命令都会存放都一个队里里面，不会立即执行。
+	 */
 	public RedisDao(Transaction transaction) {
 		this.transaction = transaction;
 	}
 	
 	/**
-	 * 用不到事物，所有查询都用这个
+	 * 某些查询方法，用不到事物。
 	 */
 	public RedisDao(Jedis jedis) {
 		this.jedis = jedis;
@@ -61,7 +69,32 @@ public class RedisDao {
 	}
 	
 	/**
-	 * @Description:返回多个key对应的valueList。
+	 * @Description: 返回有序集 key 中，指定区间内的成员。 按照从小到大排序
+	 * @param key key值 Note:sort:noteId 0 -1
+	 * @param start 初始位置
+	 * @param end 结束位置
+	 * @param jedis
+	 * @return:Set<String>
+	 */
+	public static Set<String> getRangeSortSet(String key, int start, int end, Jedis jedis) {
+		return jedis.zrange(key, start, end);
+	}
+	
+	/**
+	 * @Description: 返回有序集 key 中，指定区间内的成员。 按照从大到小排序
+	 * @see: 例如用来插入数据时候获取主键的id
+	 * @param key key值 Note:sort:noteId 0 0
+	 * @param start 初始位置
+	 * @param end 结束位置
+	 * @param jedis
+	 * @return:Set<String>
+	 */
+	public static Set<String> getRevrangeSortSet(String key, int start, int end, Jedis jedis) {
+		return jedis.zrevrange(key, start, end);
+	}
+	
+	/**
+	 * @Description:根据key的set集合，返回多个key对应的stringList。
 	 * @param sortKey
 	 * @param jedis
 	 * @return:List<String>
@@ -88,6 +121,15 @@ public class RedisDao {
 	 */
 	public void delSet(String key, String member) {
 		transaction.srem(key, member);
+	}
+	
+	/**
+	 * @Description: 删除sortset类型的数据
+	 * @param key
+	 * @param member
+	 */
+	public void delSortSet(String key, String member) {
+		transaction.zrem(key, member);
 	}
 	
 	/**
@@ -161,7 +203,6 @@ public class RedisDao {
 	/**
 	 * @Description: 根据jsonKey，获取相应的json字符串，转换成实体类List
 	 * @param key
-	 * @return
 	 * @return:List<T>
 	 */
 	public static List<?> getListBean(Set<String> sortKey, Class classs, Jedis jedis) {
@@ -271,6 +312,10 @@ public class RedisDao {
 		setJSON(className, primaryValue, JSON.toJSON(t).toString());
 		// 4、所有主键建立索引
 		zaddIndex(className, primaryKey, primaryValue);
+		
+		// 5、按照id大小排序
+		zaddSort(className, primaryKey, primaryValue, primaryValue);
+		
 	}
 	
 	/**
@@ -342,6 +387,8 @@ public class RedisDao {
 		delString(className + SPLIT_MARK + primaryValue);
 		// 4、删除索引
 		delSet(className + SPLIT_MARK + INDEX + SPLIT_MARK + primaryKey, className + SPLIT_MARK + primaryValue);
+		// 5、删除某个排序
+		delSortSet(className + SPLIT_MARK + SORT + SPLIT_MARK + primaryKey, primaryValue);
 	}
 	
 	/**

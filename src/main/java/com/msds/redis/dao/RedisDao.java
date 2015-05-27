@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
 
 import com.alibaba.fastjson.JSON;
@@ -35,6 +36,9 @@ public class RedisDao {
 	// 事物
 	private static Transaction transaction;
 	
+	// 管道
+	private static Pipeline pipeline;
+	
 	/**
 	 * redis事物一旦开启之后，所有的命令都会存放都一个队里里面，不会立即执行。
 	 */
@@ -47,6 +51,13 @@ public class RedisDao {
 	 */
 	public RedisDao(Jedis jedis) {
 		this.jedis = jedis;
+	}
+	
+	/**
+	 * 管道+事物效率等于Transaction，目前没用到，如果某些操作不需要事物控制，可以用到管道
+	 */
+	public RedisDao(Pipeline pipeline) {
+		this.pipeline = pipeline;
 	}
 	
 	/**

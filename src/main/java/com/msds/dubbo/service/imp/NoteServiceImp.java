@@ -107,6 +107,8 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 				// 再插入新修改的note
 				rd.insertSingleDataToredis(newNote, beanField);
 				
+				// rd.updateSingleFromToredis(orldNote, newNote, beanField);
+				
 				/* 处理之后的数据库sql日志处理 */
 				String logs = genSql(newNote);
 				rd.pubishLog(logs);
@@ -117,7 +119,7 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 			log.error(" update(Note note) 失败！" + e.getLocalizedMessage());
 		}
 		finally {
-			log.info("回收jedis连接");
+			// log.info("回收jedis连接");
 			pool.returnResource(jedis);
 		}
 	}

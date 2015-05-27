@@ -428,4 +428,41 @@ public class RedisDao {
 		transaction.flushDB();
 	}
 	
+	/**
+	 * @Description: 更新redis里面的某个数据
+	 * @param oldObject 原来的对象
+	 * @param t
+	 * @param bf
+	 */
+	public void updateSingleFromToredis(Object oldObject, Object t, BeanField bf)
+			throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field[] fieldList = bf.getFieldList();
+		String primaryKey = bf.getPrimaryKey();
+		String className = bf.getClassName();
+		// 获取主键值
+		Field pvField = t.getClass().getDeclaredField(primaryKey);
+		pvField.setAccessible(true);
+		String primaryValue = pvField.get(t).toString();
+		
+		for (Field field : fieldList) {
+			field.setAccessible(true);
+			String fieldName = field.getName();
+			Object fieldValue = field.get(t);
+			// 去除不缓存的
+			if (null != fieldValue && !field.isAnnotationPresent(RedisFieldNotCache.class)) {
+				// 1、更新类型一k/v
+				setTable(className, primaryValue, fieldName, fieldValue.toString());
+				// 对有注解的进行sadd kv存储
+				if (field.isAnnotationPresent(RedisQuery.class)) {
+					// 2、更新类型二 k/v
+					saddColumn(className, fieldName, fieldValue.toString(), primaryValue);
+					// 删除就的类型2
+					delSet(className + SPLIT_MARK + fieldName + SPLIT_MARK + field.get(oldObject), className + SPLIT_MARK + primaryValue);
+				}
+			}
+		}
+		// 3、更新 存放映射bean key-jsonValue
+		setJSON(className, primaryValue, JSON.toJSON(t).toString());
+	}
+	
 }

@@ -1,4 +1,4 @@
-package com.msds.redis.dao;
+package com.msds.redis.synchronize;
 
 import java.util.List;
 

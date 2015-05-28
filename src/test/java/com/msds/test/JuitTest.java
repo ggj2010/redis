@@ -22,7 +22,7 @@ import redis.clients.jedis.JedisPubSub;
 import com.msds.dubbo.bean.Note;
 import com.msds.dubbo.service.BaseService;
 import com.msds.dubbo.service.NoteService;
-import com.msds.redis.util.NotifyDataBase;
+import com.msds.redis.synchronize.NotifyDataBase;
 import com.msds.redis.util.RedisCacheManager;
 import com.msds.redis.util.RedisCachePool;
 import com.msds.redis.util.RedisDataBaseType;
@@ -81,7 +81,7 @@ public class JuitTest {
 		log.info(note.toString());
 	}
 	
-	@Test
+	// @Test
 	public void insert() {
 		Note note = new Note();
 		note.setFlag(0);
@@ -107,7 +107,7 @@ public class JuitTest {
 	/**
 	 * @Description: 测试删除
 	 */
-	@Test
+	// @Test
 	public void delete() {
 		for (int i = 0; i < 2; i++) {
 			baseService.delete(i + "");
@@ -117,9 +117,9 @@ public class JuitTest {
 	/**
 	 * @Description: 测试更新。更新需要注意的细节就是，先从redis里面查询出来的值，然后在上面做修改。
 	 */
-	// @Test
+	@Test
 	public void update() {
-		String id = "50";
+		String id = "2";
 		Note note = noteService.queryById(id);
 		note.setAuthorName("张静月");
 		note.setFromUrl("www.ggjlovezjy.com:1314");

@@ -40,7 +40,7 @@ public class RedisCacheManagers {
 	private static JedisPoolConfig poolConfig = null;
 	
 	// 保存不同的数据库连接
-	private ConcurrentHashMap<String, RedisCachePool> redisPoolMap = new ConcurrentHashMap<String, RedisCachePool>();
+	private static ConcurrentHashMap<String, RedisCachePool> redisPoolMap = new ConcurrentHashMap<String, RedisCachePool>();
 	
 	static {
 		ResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -78,7 +78,7 @@ public class RedisCacheManagers {
 		ApplicationContext ac = new ClassPathXmlApplicationContext("classpath:spring-context.xml");
 	}
 	
-	public ConcurrentHashMap<String, RedisCachePool> getRedisPoolMap() {
+	public static ConcurrentHashMap<String, RedisCachePool> getRedisPoolMap() {
 		if (redisPoolMap.size() < 1) {
 			initConfig();
 			initPoolMap();
@@ -90,7 +90,7 @@ public class RedisCacheManagers {
 	 * @Description:共享的poolconfig
 	 * @return:void
 	 */
-	private void initConfig() {
+	private static void initConfig() {
 		poolConfig = new JedisPoolConfig();
 		poolConfig.setTestOnBorrow(testwhileidle.equals("true") ? true : false);
 		poolConfig.setTestWhileIdle(testonborrow.equals("true") ? true : false);
@@ -100,7 +100,7 @@ public class RedisCacheManagers {
 		poolConfig.setMaxWaitMillis(Integer.parseInt(maxwaitmillis));
 	}
 	
-	private void initPoolMap() {
+	private static void initPoolMap() {
 		try {
 			if (null != redisdbtype && null != redisdbnumber) {
 				String[] dbs = redisdbtype.split(",");

@@ -2,6 +2,7 @@ package com.msds.test;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -84,9 +85,13 @@ public class InitDataToRedis {
 		final Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("from " + tableName);
 		List<Object> objectList = query.list();
-		// if (objectList.size() > 3) {
-		// objectList = objectList.subList(0, 3);
-		// }
+		if (objectList.size() > 3) {
+			objectList = objectList.subList(0, 1);
+		}
+		
+		if (!tableName.equals("Note")) {
+			objectList = new ArrayList<Object>();
+		}
 		return objectList;
 	}
 }

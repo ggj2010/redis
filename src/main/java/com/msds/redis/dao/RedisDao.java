@@ -454,10 +454,10 @@ public class RedisDao {
 				setTable(className, primaryValue, fieldName, fieldValue.toString());
 				// 对有注解的进行sadd kv存储
 				if (field.isAnnotationPresent(RedisQuery.class)) {
-					// 2、更新类型二 k/v
-					saddColumn(className, fieldName, fieldValue.toString(), primaryValue);
 					// 删除就的类型2
 					delSet(className + SPLIT_MARK + fieldName + SPLIT_MARK + field.get(oldObject), className + SPLIT_MARK + primaryValue);
+					// 2、更新类型二 k/v
+					saddColumn(className, fieldName, fieldValue.toString(), primaryValue);
 				}
 			}
 		}

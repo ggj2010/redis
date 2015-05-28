@@ -102,12 +102,12 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 				rd = new RedisDao(transation);
 				BeanField beanField = rd.getBeanField(orldNote);
 				
-				// 先删除原来的
-				rd.delSingleDataFromRedis(orldNote, beanField);
-				// 再插入新修改的note
-				rd.insertSingleDataToredis(newNote, beanField);
+				// // 先删除原来的
+				// rd.delSingleDataFromRedis(orldNote, beanField);
+				// // 再插入新修改的note
+				// rd.insertSingleDataToredis(newNote, beanField);
 				
-				// rd.updateSingleFromToredis(orldNote, newNote, beanField);
+				rd.updateSingleFromToredis(orldNote, newNote, beanField);
 				
 				/* 处理之后的数据库sql日志处理 */
 				String logs = genSql(newNote);
@@ -265,11 +265,11 @@ public class NoteServiceImp implements NoteService, BaseService<Note> {
 	private String insertSql(Note note) {
 		// 组装sql
 		StringBuilder sb = new StringBuilder();
-		sb.append("insert into tcnote (noteid,note_name,author_name,from_url,flag,noteBook,noteBookGroup) values ( ");
+		sb.append("insert into tcnote (note_id,note_name,author_name,from_url,flag,noteBook,noteBookGroup) values ( ");
 		sb.append(note.getNoteId() + ", ");
-		sb.append(note.getNoteName() + ", ");
-		sb.append(note.getAuthorName() + ", ");
-		sb.append(note.getFromUrl() + ", ");
+		sb.append("'" + note.getNoteName() + "', ");
+		sb.append("'" + note.getAuthorName() + "', ");
+		sb.append("'" + note.getFromUrl() + "', ");
 		sb.append(note.getFlag() + ", ");
 		sb.append(" 1, ");
 		sb.append(" 1 )");

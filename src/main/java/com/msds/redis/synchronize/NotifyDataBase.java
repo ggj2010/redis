@@ -1,4 +1,4 @@
-package com.msds.redis.util;
+package com.msds.redis.synchronize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,9 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
 import com.msds.redis.dao.RedisDao;
-import com.msds.redis.dao.RedisUpdateToDataBase;
+import com.msds.redis.util.RedisCacheManager;
+import com.msds.redis.util.RedisCachePool;
+import com.msds.redis.util.RedisDataBaseType;
 
 /**
  * @ClassName:NotifyDataBase.java

@@ -32,12 +32,12 @@ public class RedisDao {
 	// pub/sub模式打印log
 	public final static String PUB_LOG = "publog";
 	
-	private static Jedis jedis;
+	private Jedis jedis;
 	// 事物
-	private static Transaction transaction;
+	private Transaction transaction;
 	
 	// 管道
-	private static Pipeline pipeline;
+	private Pipeline pipeline;
 	
 	/**
 	 * redis事物一旦开启之后，所有的命令都会存放都一个队里里面，不会立即执行。
@@ -77,6 +77,44 @@ public class RedisDao {
 	 */
 	public static String get(String key, Jedis jedis) {
 		return jedis.get(key);
+	}
+	
+	/**
+	 * @Description:set string类型
+	 * @param key
+	 * @param value
+	 */
+	public void set(String key, String value) {
+		transaction.set(key, value);
+	}
+	
+	/**
+	 * @Description: 存放set类型
+	 * @param key
+	 * @param value
+	 */
+	public void sadd(String key, String value) {
+		transaction.sadd(key, value);
+	}
+	
+	/**
+	 * @Description: 存放sortset类型
+	 * @param key
+	 * @param score
+	 * @param member
+	 */
+	public void zadd(String key, double score, String member) {
+		transaction.zadd(key, score, member);
+	}
+	
+	/**
+	 * @Description: 存放list类型
+	 * @param key
+	 * @param value
+	 */
+	public void lpush(String key, String value) {
+		transaction.lpush(key, value);
+		
 	}
 	
 	/**

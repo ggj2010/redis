@@ -33,6 +33,7 @@ import com.msds.redis.util.RedisDataBaseType;
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 /**
+ * 
  * @ClassName:JuitTest.java
  * @Description:   redis测试 
  * @author gaoguangjin
@@ -81,14 +82,24 @@ public class JuitTest {
 		log.info(note.toString());
 	}
 	
-	// @Test
-	public void insert() {
+	@Test
+	public void insert() throws Exception {
 		Note note = new Note();
 		note.setFlag(0);
 		note.setFromUrl("www.ggjlovezjy.com:1314");
 		note.setNoteName("测试插入");
 		note.setAuthorName("高广金测试插入");
-		baseService.insert(note);
+		// baseService.insert(note);
+		
+		// List<Object> noteList = new ArrayList<Object>();
+		// noteList.add(note);
+		// Transaction tx =
+		// redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString()).getResource().multi();
+		//
+		// RedisDao da = new RedisDao(tx);
+		// da.insertListToredis(noteList);
+		// tx.exec();
+		
 	}
 	
 	// 查询带参数的
@@ -117,7 +128,7 @@ public class JuitTest {
 	/**
 	 * @Description: 测试更新。更新需要注意的细节就是，先从redis里面查询出来的值，然后在上面做修改。
 	 */
-	@Test
+	// @Test
 	public void update() {
 		String id = "2";
 		Note note = noteService.queryById(id);

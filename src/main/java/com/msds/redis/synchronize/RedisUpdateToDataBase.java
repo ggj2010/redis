@@ -2,13 +2,14 @@ package com.msds.redis.synchronize;
 
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @ClassName:RedisUpdateToDataBase.java
@@ -20,9 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Transactional
 public class RedisUpdateToDataBase {
+	private static Logger log = Logger.getLogger(RedisUpdateToDataBase.class);
+
 	@Autowired
 	SessionFactory sessionFactory;
-	
+
 	public boolean excuteUpdate(List<String> list) {
 		try {
 			Session session = sessionFactory.getCurrentSession();

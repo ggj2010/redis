@@ -7,6 +7,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,19 +38,22 @@ import com.msds.redis.util.RedisDataBaseType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,
+		TransactionalTestExecutionListener.class })
 /**
  * @ClassName:InitDataToRedis.java
- * @Description: 初始化数据库数据到redis   
+ * @Description: 初始化数据库数据到redis
  * @author gaoguangjin
  * @Date 2015-5-21 上午10:02:00
  */
 public class InitDataToRedis {
+	private static Logger log = Logger.getLogger(InitDataToRedis.class);
+
 	@Autowired
 	SessionFactory sessionFactory;
 	@Autowired
 	RedisCacheManager redisCacheManager;
-	
+
 	@Test
 	@Transactional
 	public void init() throws IOException, ClassNotFoundException, NoSuchMethodException, SecurityException {
@@ -63,7 +67,8 @@ public class InitDataToRedis {
 			ResourcePatternResolver rp = new PathMatchingResourcePatternResolver();
 			Resource[] resources = rp.getResources("classpath:com/msds/dubbo/**/*.class");
 			for (Resource resource : resources) {
-				String className = resource.getFile().getPath().split("classes\\\\")[1].replaceAll("\\\\", ".").replaceAll(".class", "");
+				String className = resource.getFile().getPath().split("classes\\\\")[1].replaceAll("\\\\", ".")
+						.replaceAll(".class", "");
 				Class<?> clzz = Thread.currentThread().getContextClassLoader().loadClass(className);
 				if (clzz.getAnnotation(RedisCache.class) != null) {
 					List<Object> listObject = getData(clzz);
@@ -77,18 +82,20 @@ public class InitDataToRedis {
 			log.error("" + e.getLocalizedMessage());
 		}
 	}
-	
-	private List<Object> getData(Class<?> clzz) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
+
+	private List<Object> getData(Class<?> clzz)
+			throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException {
 		Field field = clzz.getDeclaredField("className");
 		field.setAccessible(true);
 		String tableName = field.get(clzz).toString();
 		final Session session = sessionFactory.getCurrentSession();
 		Query query = session.createQuery("from " + tableName);
+		@SuppressWarnings("unchecked")
 		List<Object> objectList = query.list();
 		if (objectList.size() > 3) {
 			objectList = objectList.subList(0, 1);
 		}
-		
+
 		if (!tableName.equals("Note")) {
 			objectList = new ArrayList<Object>();
 		}

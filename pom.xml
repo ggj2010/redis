@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cn.msec.core</groupId>
 	<artifactId>redis</artifactId>
@@ -6,18 +7,10 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.version>4.0.5.RELEASE</spring.version>
- 	<!--dubbo 2.4.10依赖sping2.5架包 会导致冲突 -->
-		 <dubbo.version>2.4.10</dubbo.version>
-		  <zkclient.version>0.1</zkclient.version>
-
-
+		<!--dubbo 2.4.10依赖sping2.5架包 会导致冲突 -->
+		<dubbo.version>2.4.10</dubbo.version>
+		<zkclient.version>0.1</zkclient.version>
 	</properties>
-
-	<parent>
-		<groupId>cn.msec.common.platform</groupId>
-		<artifactId>pom.parent</artifactId>
-		<version>0.1.0</version>
-	</parent>
 
 	<dependencies>
 		<dependency>
@@ -30,25 +23,25 @@
 			<artifactId>fastjson</artifactId>
 			<version>1.1.41</version>
 		</dependency>
-		
+
 		<!-- dubbo阿里巴巴的SOA服务 -->
 		<dependency>
-				<groupId>com.alibaba</groupId>
-				<artifactId>dubbo</artifactId>
-				<version>${dubbo.version}</version>
-				<!-- 这样写法是去除dubbo依赖的spring2.5架包，因为多余的会导致冲突 -->
-				<exclusions>  
-                <exclusion>  
-                    <artifactId>spring</artifactId>  
-                    <groupId>org.springframework</groupId>  
-                </exclusion>  
-            </exclusions>  
-	   </dependency>
-	   <!-- zookeeper -->
-	  	 <dependency>
-				<groupId>com.github.sgroschupf</groupId>
-				<artifactId>zkclient</artifactId>
-				<version>${zkclient.version}</version>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>${dubbo.version}</version>
+			<!-- 这样写法是去除dubbo依赖的spring2.5架包，因为多余的会导致冲突 -->
+			<exclusions>
+				<exclusion>
+					<artifactId>spring</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- zookeeper -->
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>${zkclient.version}</version>
 		</dependency>
 
 		<dependency>

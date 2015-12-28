@@ -20,6 +20,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
 import com.msds.dubbo.bean.Note;
@@ -34,25 +35,31 @@ import com.msds.dubbo.bean.NoteBookGroup;
  */
 @Slf4j
 public class StoreToDataBaseByThread {
+
+	private static Logger log = Logger.getLogger(StoreToDataBaseByThread.class);
+
 	private ConcurrentHashMap<String, String> currentHashMap;
 	private Session session;
 	private CountDownLatch latch;
 	// 默认笔记本组id是1
 	private NoteBookGroup noteBookGroup = new NoteBookGroup();
-	
+
 	// 多线程httpclient解决超时连接
-	private static RequestConfig defaultRequestConfig = RequestConfig.custom().setSocketTimeout(500000).setConnectTimeout(500000).build();
+	private static RequestConfig defaultRequestConfig = RequestConfig.custom().setSocketTimeout(500000)
+			.setConnectTimeout(500000).build();
 	// http请求连接池
 	private PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
 	// 一个服务器只有一个客户端
-	private CloseableHttpClient httpClients = HttpClients.custom().setConnectionManager(cm).setDefaultRequestConfig(defaultRequestConfig).build();
-	
-	public StoreToDataBaseByThread(ConcurrentHashMap<String, String> currentHashMap, Session session, CountDownLatch latch) {
+	private CloseableHttpClient httpClients = HttpClients.custom().setConnectionManager(cm)
+			.setDefaultRequestConfig(defaultRequestConfig).build();
+
+	public StoreToDataBaseByThread(ConcurrentHashMap<String, String> currentHashMap, Session session,
+			CountDownLatch latch) {
 		this.currentHashMap = currentHashMap;
 		this.session = session;
 		this.latch = latch;
 	}
-	
+
 	/**
 	 * @Description:
 	 * @see:多单线程插入==》map大小： 插入数据库耗时：50103ms
@@ -80,7 +87,7 @@ public class StoreToDataBaseByThread {
 							e.printStackTrace();
 						}
 						note.setFromUrl(path);
-						
+
 						note.setNoteName(title);
 						note.setAuthorName("高广金");
 						note.setCreatedate(new Date());
@@ -95,7 +102,7 @@ public class StoreToDataBaseByThread {
 						} else {
 							nb.setNoteBookId(2);
 						}
-						
+
 						note.setNoteBookGroup(noteBookGroup);
 						note.setNoteBook(nb);
 						noteList.add(note);
@@ -103,13 +110,13 @@ public class StoreToDataBaseByThread {
 					}
 				}.start();
 			}
-			
+
 		} catch (Exception e) {
 			log.error("爬虫抓取网页内容写入到数据库失败！" + e.getLocalizedMessage());
 		}
 		return noteList;
 	}
-	
+
 	private String getHtmlByPath(String url) {
 		HttpGet httpGet = null;
 		try {
@@ -120,14 +127,13 @@ public class StoreToDataBaseByThread {
 			CloseableHttpResponse response = httpClients.execute(httpGet);
 			HttpEntity entity = response.getEntity();
 			return EntityUtils.toString(entity, "utf-8");
-			
+
 		} catch (Exception e) {
 			log.error("httpClients读取网页内容失败！" + e.getLocalizedMessage() + ":" + url);
 			return "error:httpClients读取网页内容失败：失败地址" + url + "===错误信息" + e.getLocalizedMessage();
-		}
-		finally {
+		} finally {
 			httpGet.releaseConnection();
 		}
 	}
-	
+
 }

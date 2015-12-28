@@ -5,14 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.Transaction;
-
 import com.alibaba.fastjson.JSON;
 import com.msds.redis.annation.RedisFieldNotCache;
 import com.msds.redis.annation.RedisQuery;
 import com.msds.redis.util.BeanField;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+import redis.clients.jedis.Transaction;
 
 /**
  * @ClassName:RedisDao.java
@@ -254,7 +254,7 @@ public class RedisDao {
 	 * @param key
 	 * @return:List<T>
 	 */
-	public static List<?> getListBean(Set<String> sortKey, Class classs, Jedis jedis) {
+	public static List<?> getListBean(Set<String> sortKey, Class<?> classs, Jedis jedis) {
 		List<Object> list = new ArrayList<Object>();
 		for (String key : sortKey) {
 			list.add(getBean(key, classs, jedis));
@@ -268,7 +268,7 @@ public class RedisDao {
 	 * @param classs实体类
 	 * @return:T dao层泛型的实体类
 	 */
-	public static Object getBean(String key, Class classs, Jedis jedis) {
+	public static Object getBean(String key, Class<?> classs, Jedis jedis) {
 		return JSON.parseObject(jedis.get(key), classs);
 	}
 	

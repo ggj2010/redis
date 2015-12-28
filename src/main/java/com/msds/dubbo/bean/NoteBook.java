@@ -20,14 +20,14 @@ import com.msds.redis.annation.RedisQuery;
 @Setter
 @RedisCache
 public class NoteBook implements Serializable {
-	
+
 	@RedisFieldNotCache
 	private static final long serialVersionUID = 1L;
 	@RedisFieldNotCache
 	private static final String className = "NoteBook";
 	@RedisFieldNotCache
 	private static final String primaryKey = "noteBookId";
-	
+
 	private int noteBookId;
 	@RedisQuery
 	private String noteBookName;
@@ -37,4 +37,59 @@ public class NoteBook implements Serializable {
 	private Integer flag;
 	@RedisQuery
 	private Date createdate;
+
+	public int getNoteBookId() {
+		return noteBookId;
+	}
+
+	public void setNoteBookId(int noteBookId) {
+		this.noteBookId = noteBookId;
+	}
+
+	public String getNoteBookName() {
+		return noteBookName;
+	}
+
+	public void setNoteBookName(String noteBookName) {
+		this.noteBookName = noteBookName;
+	}
+
+	public int getTextSum() {
+		return textSum;
+	}
+
+	public void setTextSum(int textSum) {
+		this.textSum = textSum;
+	}
+
+	public NoteBookGroup getNoteBookGroup() {
+		return noteBookGroup;
+	}
+
+	public void setNoteBookGroup(NoteBookGroup noteBookGroup) {
+		this.noteBookGroup = noteBookGroup;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public Date getCreatedate() {
+		return createdate;
+	}
+
+	public void setCreatedate(Date createdate) {
+		this.createdate = createdate;
+	}
+
+	@Override
+	public String toString() {
+		return "NoteBook [noteBookId=" + noteBookId + ", noteBookName=" + noteBookName + ", textSum=" + textSum
+				+ ", noteBookGroup=" + noteBookGroup + ", flag=" + flag + ", createdate=" + createdate + "]";
+	}
+
 }

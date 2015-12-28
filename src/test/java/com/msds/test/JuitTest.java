@@ -5,6 +5,7 @@ import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +32,26 @@ import com.msds.redis.util.RedisDataBaseType;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,
+		TransactionalTestExecutionListener.class })
 /**
  * 
  * @ClassName:JuitTest.java
- * @Description:   redis测试 
+ * @Description: redis测试
  * @author gaoguangjin
  * @Date 2015-5-21 上午10:03:00
  */
 public class JuitTest {
+	private static Logger log = Logger.getLogger(JuitTest.class);
+
 	@Autowired
 	RedisCacheManager redisCacheManager;
 	@Qualifier("NoteServiceImp")
 	@Autowired
-	BaseService baseService;
+	BaseService<Note> baseService;
 	@Autowired
 	NoteService noteService;
-	
+
 	// 启动日志监听，用MonitorSql 类代替 因为单元测试里面多线程无法堵塞
 	// @Before
 	public void before() {
@@ -60,20 +64,20 @@ public class JuitTest {
 			}
 		}.start();
 	}
-	
+
 	// 查询所有数据。redis和服务器子同一局域网下
 	// @Test
 	public void findAll() {
 		long time = System.currentTimeMillis();
 		List<Note> list = baseService.findAll();
-		
+
 		for (Note note : list) {
 			log.info(note.toString());
 		}
 		long time2 = System.currentTimeMillis();
 		log.info("耗时" + (time2 - time));// 9790
 	}
-	
+
 	// 查询单条数据
 	// @Test
 	public void findOne() {
@@ -81,7 +85,7 @@ public class JuitTest {
 		Note note = noteService.queryById(id);
 		log.info(note.toString());
 	}
-	
+
 	@Test
 	public void insert() throws Exception {
 		Note note = new Note();
@@ -90,7 +94,7 @@ public class JuitTest {
 		note.setNoteName("测试插入");
 		note.setAuthorName("高广金测试插入");
 		// baseService.insert(note);
-		
+
 		// List<Object> noteList = new ArrayList<Object>();
 		// noteList.add(note);
 		// Transaction tx =
@@ -99,9 +103,9 @@ public class JuitTest {
 		// RedisDao da = new RedisDao(tx);
 		// da.insertListToredis(noteList);
 		// tx.exec();
-		
+
 	}
-	
+
 	// 查询带参数的
 	// @Test
 	public void findByParam() {
@@ -109,12 +113,12 @@ public class JuitTest {
 		note.setAuthorName("张静月");
 		note.setFromUrl("http://www.tuicool.com/");
 		List<Note> noteList = noteService.queryParamAnd(note);
-		
+
 		for (Note list : noteList) {
 			log.info(list.toString());
 		}
 	}
-	
+
 	/**
 	 * @Description: 测试删除
 	 */
@@ -124,7 +128,7 @@ public class JuitTest {
 			baseService.delete(i + "");
 		}
 	}
-	
+
 	/**
 	 * @Description: 测试更新。更新需要注意的细节就是，先从redis里面查询出来的值，然后在上面做修改。
 	 */
@@ -136,7 +140,7 @@ public class JuitTest {
 		note.setFromUrl("www.ggjlovezjy.com:1314");
 		baseService.update(note);
 	}
-	
+
 	// @Test
 	public void after() {
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
@@ -145,7 +149,7 @@ public class JuitTest {
 		display(jedis);
 		pool.returnResource(jedis);
 	}
-	
+
 	private void display(Jedis jedis) {
 		Set<String> aa = jedis.smembers("Note:createdate:2015-05-20 01:04:13.0");
 		Set<String> bb = jedis.smembers("Note:fromUrl:http://www.tuicool.com/articles/vquaei");

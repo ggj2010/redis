@@ -20,13 +20,14 @@ import com.msds.redis.util.RedisDataBaseType;
  */
 @Slf4j
 public class MonitorSql {
-	
+
 	public static void main(String[] args) {
+		@SuppressWarnings("resource")
 		ApplicationContext application = new ClassPathXmlApplicationContext("spring-context.xml");
 		RedisCacheManager redisCacheManager = (RedisCacheManager) application.getBean("redisCacheManager");
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 		final Jedis jedis = pool.getResource();
-		
+
 		final JedisPubSub ndb = (JedisPubSub) application.getBean("notifyDataBase");
 		// final Jedis jedis = RedisPool.getJedis();
 		// final JedisPubSub ndb = new NotifyDataBase();

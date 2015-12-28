@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -26,12 +27,14 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import com.msds.dubbo.bean.Note;
+import com.msds.redis.performance.RedisCompareDataBase;
 
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({ "classpath:spring-context.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = false)
-@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class,
+		TransactionalTestExecutionListener.class })
 /**
  * @ClassName:InitDataToDataBase.java
  * @Description: 初始化网站数据到数据库
@@ -39,12 +42,13 @@ import com.msds.dubbo.bean.Note;
  * @Date 2015-5-21 上午9:55:48
  */
 public class InitDataToDataBase extends AbstractTransactionalJUnit4SpringContextTests {
+	private static Logger log = Logger.getLogger(InitDataToDataBase.class);
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	// 存放url 和title
 	public ConcurrentHashMap<String, String> currentHashMap = new ConcurrentHashMap<String, String>();
-	
+
 	@Test
 	@Transactional
 	public void test() throws IOException {
@@ -56,11 +60,11 @@ public class InitDataToDataBase extends AbstractTransactionalJUnit4SpringContext
 			}
 			pool.shutdown();
 			pool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);// 线程池里面线程所有执行完之后执行下面
-			
+
 			// 处理map里面的链接，保存到数据库。大概有1123个url
 			System.out.println("map大小：" + currentHashMap.size());
 			long beginTime = System.currentTimeMillis();
-			
+
 			// 【2】多线程插入、CountDownLatch是用来解决防止session关闭的问题
 			CountDownLatch latch = new CountDownLatch(currentHashMap.size());
 			List<Note> listNote = new StoreToDataBaseByThread(currentHashMap, session, latch).insertToDatabase();
@@ -69,10 +73,10 @@ public class InitDataToDataBase extends AbstractTransactionalJUnit4SpringContext
 			for (Note note : listNote) {
 				session.save(note);
 			}
-			
+
 			long endTime = System.currentTimeMillis();
 			log.info("插入数据库耗时：" + (endTime - beginTime) + "ms");
-			
+
 			System.out.println("end");
 		} catch (InterruptedException e) {
 			log.error("" + e.getLocalizedMessage());

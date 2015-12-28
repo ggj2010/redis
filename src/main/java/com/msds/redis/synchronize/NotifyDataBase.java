@@ -5,6 +5,7 @@ import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,19 +26,21 @@ import com.msds.redis.util.RedisDataBaseType;
 @Slf4j
 @Service("notifyDataBase")
 public class NotifyDataBase extends JedisPubSub {
+
+	private static Logger log = Logger.getLogger(NotifyDataBase.class);
 	@Autowired
 	RedisUpdateToDataBase redisUpdateToDataBase;
-	
+
 	@Autowired
 	RedisCacheManager redisCacheManager;
-	
+
 	@Override
 	public void onMessage(String channel, String sql) {
 		log.info("redis更新转换成数据库==》sql:" + sql);
-		
+
 		RedisCachePool pool = redisCacheManager.getRedisPoolMap().get(RedisDataBaseType.defaultType.toString());
 		final Jedis jedis = pool.getResource();
-		
+
 		Long length = jedis.llen(RedisDao.LOG);
 		int n = 2;// 如果log的list size 达到n 的时候就一次性执行更新。测试的时候就弄成2
 		List<String> list = new ArrayList<String>();
@@ -46,7 +49,7 @@ public class NotifyDataBase extends JedisPubSub {
 				String sqlStr = jedis.lpop(RedisDao.LOG);// 删除list首元素
 				list.add(sqlStr);
 			}
-			
+
 			// 是否执行成功
 			boolean flag = redisUpdateToDataBase.excuteUpdate(list);
 			if (!flag) {
@@ -56,33 +59,33 @@ public class NotifyDataBase extends JedisPubSub {
 			}
 		}
 	}
-	
+
 	@Override
 	public void onPMessage(String pattern, String channel, String message) {
 		log.info("onPMessage");
 	}
-	
+
 	@Override
 	public void onSubscribe(String channel, int subscribedChannels) {
 		log.info("开始监控redis变化！");
-		
+
 	}
-	
+
 	@Override
 	public void onUnsubscribe(String channel, int subscribedChannels) {
 		log.info("onUnsubscribe");
-		
+
 	}
-	
+
 	@Override
 	public void onPUnsubscribe(String pattern, int subscribedChannels) {
 		log.info("onPUnsubscribe");
-		
+
 	}
-	
+
 	@Override
 	public void onPSubscribe(String pattern, int subscribedChannels) {
 		log.info("onPSubscribe");
 	}
-	
+
 }
